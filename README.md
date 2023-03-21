@@ -3,8 +3,6 @@
 
 A REST API server written in Rust with Rocket and SeaORM.
 
-Udemy Course:
-
 ---
 
 ### **Author**: [Afaan Bilal](https://afaan.dev)

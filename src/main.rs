@@ -1,3 +1,11 @@
+/**
+ * 📕 BookStore
+ *
+ * @author Afaan Bilal
+ * @link   https://afaan.dev
+ * @link   https://github.com/AfaanBilal/bookstore
+ */
+
 #[macro_use]
 extern crate rocket;
 

@@ -22,6 +22,13 @@ cargo test
 
 ---
 
+## Entity Generation
+````
+sea generate entity -o src/entities -u mysql://root:@localhost:3306/bookstore
+````
+
+---
+
 ## Contributing
 All contributions are welcome. Please create an issue first for any feature request
 or bug. Then fork the repository, create a branch and make any changes to fix the bug

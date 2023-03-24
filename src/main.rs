@@ -13,6 +13,7 @@ use sea_orm_migration::prelude::*;
 
 mod db;
 mod migrator;
+mod entities;
 
 pub struct AppConfig {
     db_host: String,

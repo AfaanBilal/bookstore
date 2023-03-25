@@ -6,9 +6,12 @@
  * @link   https://github.com/AfaanBilal/bookstore
  */
 use super::Response;
+use rocket::State;
+use sea_orm::DatabaseConnection;
 
 #[post("/sign-in")]
-pub async fn sign_in() -> Response<String> {
+pub async fn sign_in(db: &State<DatabaseConnection>) -> Response<String> {
+    let db = db as &DatabaseConnection;
     todo!()
 }
 

@@ -54,6 +54,7 @@ async fn rocket() -> _ {
 
     rocket::build()
         .attach(CORS)
+        .manage(db)
         .mount("/", routes![options])
         .mount("/", routes![index])
         .mount(

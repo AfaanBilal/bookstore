@@ -9,6 +9,7 @@
 extern crate rocket;
 
 use controllers::{Response, SuccessResponse};
+use fairings::cors::{CORS, options};
 use migrator::Migrator;
 use rocket::http::Status;
 use sea_orm_migration::prelude::*;
@@ -17,6 +18,7 @@ mod controllers;
 mod db;
 mod entities;
 mod migrator;
+mod fairings;
 
 pub struct AppConfig {
     db_host: String,
@@ -51,6 +53,8 @@ async fn rocket() -> _ {
     Migrator::up(&db, None).await.unwrap();
 
     rocket::build()
+        .attach(CORS)
+        .mount("/", routes![options])
         .mount("/", routes![index])
         .mount(
             "/auth",

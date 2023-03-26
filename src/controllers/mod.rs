@@ -6,6 +6,7 @@
  * @link   https://github.com/AfaanBilal/bookstore
  */
 use rocket::http::Status;
+use sea_orm::DbErr;
 
 pub mod auth;
 pub mod authors;
@@ -18,3 +19,9 @@ pub struct SuccessResponse<T>(pub (Status, T));
 pub struct ErrorResponse(pub (Status, String));
 
 pub type Response<T> = Result<SuccessResponse<T>, ErrorResponse>;
+
+impl From<DbErr> for ErrorResponse {
+    fn from(err: DbErr) -> Self {
+        ErrorResponse((Status::InternalServerError, err.to_string()))
+    }
+}

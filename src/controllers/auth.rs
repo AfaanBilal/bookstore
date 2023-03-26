@@ -8,13 +8,16 @@
 use super::{Response, SuccessResponse};
 use crate::controllers::ErrorResponse;
 use crate::entities::{prelude::*, user};
-use bcrypt::{hash, DEFAULT_COST};
+use crate::AppConfig;
+use bcrypt::{hash, verify, DEFAULT_COST};
+use jsonwebtoken::{encode, EncodingKey, Header};
 use rocket::{
     http::Status,
     serde::{json::Json, Deserialize, Serialize},
     State,
 };
 use sea_orm::*;
+use std::time::SystemTime;
 
 #[derive(Deserialize)]
 #[serde(crate = "rocket::serde")]
@@ -29,13 +32,62 @@ pub struct ResSignIn {
     token: String,
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+struct Claims {
+    sub: i32,
+    role: String,
+    exp: u64,
+}
+
 #[post("/sign-in", data = "<req_sign_in>")]
 pub async fn sign_in(
     db: &State<DatabaseConnection>,
+    config: &State<AppConfig>,
     req_sign_in: Json<ReqSignIn>,
 ) -> Response<ResSignIn> {
     let db = db as &DatabaseConnection;
-    todo!()
+    let config = config as &AppConfig;
+
+    let u: user::Model = match User::find()
+        .filter(user::Column::Email.eq(&req_sign_in.email))
+        .one(db)
+        .await?
+    {
+        Some(u) => u,
+        None => {
+            return Err(ErrorResponse((
+                Status::Unauthorized,
+                "Invalid credentials".to_string(),
+            )))
+        }
+    };
+
+    if !verify(&req_sign_in.password, &u.password).unwrap() {
+        return Err(ErrorResponse((
+            Status::Unauthorized,
+            "Invalid credentials".to_string(),
+        )));
+    }
+
+    let claims = Claims {
+        sub: u.id,
+        role: "user".to_string(),
+        exp: SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap()
+            .as_secs()
+            + 4 * 60 * 60,
+    };
+
+    let token = encode(
+        &Header::default(),
+        &claims,
+        &EncodingKey::from_secret(config.jwt_secret.as_bytes()),
+    )
+    .unwrap();
+
+    Ok(SuccessResponse((Status::Ok, ResSignIn { token })))
 }
 
 #[derive(Deserialize)]

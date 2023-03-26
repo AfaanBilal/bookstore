@@ -9,7 +9,7 @@
 extern crate rocket;
 
 use controllers::{Response, SuccessResponse};
-use fairings::cors::{CORS, options};
+use fairings::cors::{options, CORS};
 use migrator::Migrator;
 use rocket::http::Status;
 use sea_orm_migration::prelude::*;
@@ -17,8 +17,8 @@ use sea_orm_migration::prelude::*;
 mod controllers;
 mod db;
 mod entities;
-mod migrator;
 mod fairings;
+mod migrator;
 
 pub struct AppConfig {
     db_host: String,
@@ -26,6 +26,7 @@ pub struct AppConfig {
     db_username: String,
     db_password: String,
     db_database: String,
+    jwt_secret: String,
 }
 
 impl Default for AppConfig {
@@ -36,6 +37,8 @@ impl Default for AppConfig {
             db_username: std::env::var("BOOKSTORE_DB_USERNAME").unwrap_or("root".to_string()),
             db_password: std::env::var("BOOKSTORE_DB_PASSWORD").unwrap_or("".to_string()),
             db_database: std::env::var("BOOKSTORE_DB_DATABASE").unwrap_or("bookstore".to_string()),
+            jwt_secret: std::env::var("BOOKSTORE_JWT_SECRET")
+                .expect("Please set the BOOKSTORE_JWT_SECRET env variable."),
         }
     }
 }
@@ -47,6 +50,8 @@ fn index() -> Response<String> {
 
 #[launch]
 async fn rocket() -> _ {
+    dotenvy::dotenv().ok();
+
     let config = AppConfig::default();
 
     let db = db::connect(&config).await.unwrap();
@@ -55,6 +60,7 @@ async fn rocket() -> _ {
     rocket::build()
         .attach(CORS)
         .manage(db)
+        .manage(config)
         .mount("/", routes![options])
         .mount("/", routes![index])
         .mount(

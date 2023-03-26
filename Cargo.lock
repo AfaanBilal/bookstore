@@ -392,6 +392,7 @@ name = "bookstore"
 version = "0.1.0"
 dependencies = [
  "bcrypt",
+ "dotenvy",
  "jsonwebtoken",
  "rocket",
  "sea-orm",

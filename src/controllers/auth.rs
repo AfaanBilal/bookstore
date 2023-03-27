@@ -6,6 +6,7 @@
  * @link   https://github.com/AfaanBilal/bookstore
  */
 use super::{Response, SuccessResponse};
+use crate::auth::{AuthenticatedUser, Claims};
 use crate::controllers::ErrorResponse;
 use crate::entities::{prelude::*, user};
 use crate::AppConfig;
@@ -30,14 +31,6 @@ pub struct ReqSignIn {
 #[serde(crate = "rocket::serde")]
 pub struct ResSignIn {
     token: String,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-#[serde(crate = "rocket::serde")]
-struct Claims {
-    sub: i32,
-    role: String,
-    exp: u64,
 }
 
 #[post("/sign-in", data = "<req_sign_in>")]
@@ -71,7 +64,7 @@ pub async fn sign_in(
     }
 
     let claims = Claims {
-        sub: u.id,
+        sub: u.id as u32,
         role: "user".to_string(),
         exp: SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)
@@ -131,5 +124,13 @@ pub async fn sign_up(
     Ok(SuccessResponse((
         Status::Created,
         "Account created!".to_string(),
+    )))
+}
+
+#[get("/me")]
+pub async fn me(db: &State<DatabaseConnection>, user: AuthenticatedUser) -> Response<String> {
+    Ok(SuccessResponse((
+        Status::Ok,
+        "My user ID is: ".to_string() + user.id.to_string().as_str(),
     )))
 }

@@ -14,6 +14,7 @@ use migrator::Migrator;
 use rocket::http::Status;
 use sea_orm_migration::prelude::*;
 
+mod auth;
 mod controllers;
 mod db;
 mod entities;
@@ -65,7 +66,11 @@ async fn rocket() -> _ {
         .mount("/", routes![index])
         .mount(
             "/auth",
-            routes![controllers::auth::sign_in, controllers::auth::sign_up,],
+            routes![
+                controllers::auth::sign_in,
+                controllers::auth::sign_up,
+                controllers::auth::me
+            ],
         )
         .mount(
             "/authors",

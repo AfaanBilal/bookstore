@@ -17,13 +17,13 @@ use crate::AppConfig;
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct Claims {
-    pub sub: u32,
+    pub sub: i32,
     pub role: String,
     pub exp: u64,
 }
 
 pub struct AuthenticatedUser {
-    pub id: u32,
+    pub id: i32,
 }
 
 #[rocket::async_trait]

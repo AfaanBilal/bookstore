@@ -27,7 +27,7 @@ pub struct ReqSignIn {
     password: String,
 }
 
-#[derive(Serialize, Deserialize, Responder)]
+#[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
 pub struct ResSignIn {
     token: String,
@@ -38,7 +38,7 @@ pub async fn sign_in(
     db: &State<DatabaseConnection>,
     config: &State<AppConfig>,
     req_sign_in: Json<ReqSignIn>,
-) -> Response<ResSignIn> {
+) -> Response<Json<ResSignIn>> {
     let db = db as &DatabaseConnection;
     let config = config as &AppConfig;
 
@@ -64,7 +64,7 @@ pub async fn sign_in(
     }
 
     let claims = Claims {
-        sub: u.id as u32,
+        sub: u.id,
         role: "user".to_string(),
         exp: SystemTime::now()
             .duration_since(SystemTime::UNIX_EPOCH)
@@ -80,7 +80,7 @@ pub async fn sign_in(
     )
     .unwrap();
 
-    Ok(SuccessResponse((Status::Ok, ResSignIn { token })))
+    Ok(SuccessResponse((Status::Ok, Json(ResSignIn { token }))))
 }
 
 #[derive(Deserialize)]
@@ -127,10 +127,28 @@ pub async fn sign_up(
     )))
 }
 
+#[derive(Serialize, Deserialize)]
+#[serde(crate = "rocket::serde")]
+pub struct ResMe {
+    id: i32,
+    email: String,
+    firstname: Option<String>,
+    lastname: Option<String>,
+}
+
 #[get("/me")]
-pub async fn me(db: &State<DatabaseConnection>, user: AuthenticatedUser) -> Response<String> {
+pub async fn me(db: &State<DatabaseConnection>, user: AuthenticatedUser) -> Response<Json<ResMe>> {
+    let db = db as &DatabaseConnection;
+
+    let u: user::Model = User::find_by_id(user.id).one(db).await?.unwrap();
+
     Ok(SuccessResponse((
         Status::Ok,
-        "My user ID is: ".to_string() + user.id.to_string().as_str(),
+        Json(ResMe {
+            id: u.id,
+            email: u.email,
+            firstname: u.firstname,
+            lastname: u.lastname,
+        }),
     )))
 }

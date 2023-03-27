@@ -12,7 +12,7 @@ use rocket::{
 };
 use sea_orm::*;
 
-use super::{Response, SuccessResponse};
+use super::{ErrorResponse, Response, SuccessResponse};
 use crate::auth::AuthenticatedUser;
 use crate::entities::{author, prelude::*};
 
@@ -99,8 +99,34 @@ pub async fn create(
 }
 
 #[get("/<id>")]
-pub async fn show(id: u32) -> Response<String> {
-    todo!()
+pub async fn show(
+    db: &State<DatabaseConnection>,
+    _user: AuthenticatedUser,
+    id: i32,
+) -> Response<Json<ResAuthor>> {
+    let db = db as &DatabaseConnection;
+
+    let author = Author::find_by_id(id).one(db).await?;
+
+    let author = match author {
+        Some(a) => a,
+        None => {
+            return Err(ErrorResponse((
+                Status::NotFound,
+                "No author found with the specified ID".to_string(),
+            )))
+        }
+    };
+
+    Ok(SuccessResponse((
+        Status::Ok,
+        Json(ResAuthor {
+            id: author.id,
+            firstname: author.firstname,
+            lastname: author.lastname,
+            bio: author.bio,
+        }),
+    )))
 }
 
 #[put("/<id>")]

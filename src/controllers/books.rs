@@ -177,6 +177,24 @@ pub async fn update(
 }
 
 #[delete("/<id>")]
-pub async fn delete(id: u32) -> Response<String> {
-    todo!()
+pub async fn delete(
+    db: &State<DatabaseConnection>,
+    _user: AuthenticatedUser,
+    id: i32,
+) -> Response<String> {
+    let db = db as &DatabaseConnection;
+
+    let book = match Book::find_by_id(id).one(db).await? {
+        Some(b) => b,
+        None => {
+            return Err(ErrorResponse((
+                Status::NotFound,
+                "No book with that specified ID.".to_string(),
+            )))
+        }
+    };
+
+    book.delete(db).await?;
+
+    Ok(SuccessResponse((Status::Ok, "Book deleted.".to_string())))
 }

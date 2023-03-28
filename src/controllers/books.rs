@@ -139,7 +139,7 @@ pub async fn show(
 #[put("/<id>", data = "<req_book>")]
 pub async fn update(
     db: &State<DatabaseConnection>,
-    user: AuthenticatedUser,
+    _user: AuthenticatedUser,
     id: i32,
     req_book: Json<ReqBook>,
 ) -> Response<Json<ResBook>> {

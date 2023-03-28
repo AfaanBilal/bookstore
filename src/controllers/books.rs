@@ -27,6 +27,18 @@ pub struct ResBook {
     pub cover: String,
 }
 
+impl From<&book::Model> for ResBook {
+    fn from(b: &book::Model) -> Self {
+        Self {
+            id: b.id,
+            author_id: b.author_id,
+            title: b.title.to_owned(),
+            year: b.year.to_owned(),
+            cover: b.cover.to_owned(),
+        }
+    }
+}
+
 #[derive(Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct ResBookList {
@@ -55,13 +67,7 @@ pub async fn index(
         .all(db)
         .await?
         .iter()
-        .map(|b| ResBook {
-            id: b.id,
-            author_id: b.author_id,
-            title: b.title.to_owned(),
-            year: b.year.to_owned(),
-            cover: b.cover.to_owned(),
-        })
+        .map(ResBook::from)
         .collect::<Vec<_>>();
 
     Ok(SuccessResponse((
@@ -94,13 +100,7 @@ pub async fn create(
 
     Ok(SuccessResponse((
         Status::Created,
-        Json(ResBook {
-            id: book.id,
-            author_id: book.author_id,
-            title: book.title,
-            year: book.year,
-            cover: book.cover,
-        }),
+        Json(ResBook::from(&book)),
     )))
 }
 
@@ -126,13 +126,7 @@ pub async fn show(
 
     Ok(SuccessResponse((
         Status::Ok,
-        Json(ResBook {
-            id: book.id,
-            author_id: book.author_id,
-            title: book.title,
-            year: book.year,
-            cover: book.cover,
-        }),
+        Json(ResBook::from(&book)),
     )))
 }
 
@@ -166,13 +160,7 @@ pub async fn update(
 
     Ok(SuccessResponse((
         Status::Ok,
-        Json(ResBook {
-            id: book.id,
-            author_id: book.author_id,
-            title: book.title,
-            year: book.year,
-            cover: book.cover,
-        }),
+        Json(ResBook::from(&book)),
     )))
 }
 

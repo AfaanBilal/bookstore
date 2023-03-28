@@ -5,10 +5,11 @@
  * @link   https://afaan.dev
  * @link   https://github.com/AfaanBilal/bookstore
  */
-
 use sea_orm_migration::prelude::*;
 
-use super::{m20220101_000001_create_user_table::User, m20230321_053747_create_author_table::Author};
+use super::{
+    m20220101_000001_create_user_table::User, m20230321_053747_create_author_table::Author,
+};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;

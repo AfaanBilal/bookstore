@@ -5,7 +5,6 @@
  * @link   https://afaan.dev
  * @link   https://github.com/AfaanBilal/bookstore
  */
-
 use sea_orm_migration::prelude::*;
 
 #[derive(DeriveMigrationName)]

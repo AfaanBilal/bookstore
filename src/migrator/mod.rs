@@ -5,7 +5,6 @@
  * @link   https://afaan.dev
  * @link   https://github.com/AfaanBilal/bookstore
  */
-
 pub use sea_orm_migration::prelude::*;
 
 mod m20220101_000001_create_user_table;

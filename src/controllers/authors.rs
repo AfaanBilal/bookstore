@@ -10,7 +10,8 @@ use rocket::{
     serde::{json::Json, Deserialize, Serialize},
     State,
 };
-use sea_orm::*;
+use sea_orm::{prelude::DateTimeUtc, *};
+use std::time::SystemTime;
 
 use super::{ErrorResponse, Response, SuccessResponse};
 use crate::auth::AuthenticatedUser;
@@ -129,9 +130,42 @@ pub async fn show(
     )))
 }
 
-#[put("/<id>")]
-pub async fn update(id: u32) -> Response<String> {
-    todo!()
+#[put("/<id>", data = "<req_author>")]
+pub async fn update(
+    db: &State<DatabaseConnection>,
+    _user: AuthenticatedUser,
+    id: i32,
+    req_author: Json<ReqAuthor>,
+) -> Response<Json<ResAuthor>> {
+    let db = db as &DatabaseConnection;
+
+    let mut author: author::ActiveModel = match Author::find_by_id(id).one(db).await? {
+        Some(a) => a.into(),
+        None => {
+            return Err(ErrorResponse((
+                Status::NotFound,
+                "No author with the specified ID.".to_string(),
+            )))
+        }
+    };
+
+    author.firstname = Set(req_author.firstname.to_owned());
+    author.lastname = Set(req_author.lastname.to_owned());
+    author.bio = Set(req_author.bio.to_owned());
+
+    author.updated_at = Set(DateTimeUtc::from(SystemTime::now()));
+
+    let author = author.update(db).await?;
+
+    Ok(SuccessResponse((
+        Status::Ok,
+        Json(ResAuthor {
+            id: author.id,
+            firstname: author.firstname,
+            lastname: author.lastname,
+            bio: author.bio,
+        }),
+    )))
 }
 
 #[delete("/<id>")]

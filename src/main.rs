@@ -9,7 +9,7 @@
 extern crate rocket;
 
 use controllers::{Response, SuccessResponse};
-use fairings::cors::{options, CORS};
+use fairings::cors::{options, Cors};
 use migrator::Migrator;
 use rocket::http::Status;
 use sea_orm_migration::prelude::*;
@@ -59,7 +59,7 @@ async fn rocket() -> _ {
     Migrator::up(&db, None).await.unwrap();
 
     rocket::build()
-        .attach(CORS)
+        .attach(Cors)
         .manage(db)
         .manage(config)
         .mount("/", routes![options])

@@ -119,7 +119,7 @@ pub async fn show(
         None => {
             return Err(ErrorResponse((
                 Status::NotFound,
-                "Cannot find a book with the specified ID.".to_string(),
+                "No book found with the specified ID.".to_string(),
             )))
         }
     };
@@ -150,7 +150,7 @@ pub async fn update(
         None => {
             return Err(ErrorResponse((
                 Status::NotFound,
-                "No book with that specified ID.".to_string(),
+                "No book found with the specified ID.".to_string(),
             )))
         }
     };
@@ -189,7 +189,7 @@ pub async fn delete(
         None => {
             return Err(ErrorResponse((
                 Status::NotFound,
-                "No book with that specified ID.".to_string(),
+                "No book found with the specified ID.".to_string(),
             )))
         }
     };

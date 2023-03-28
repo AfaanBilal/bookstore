@@ -114,7 +114,7 @@ pub async fn show(
         None => {
             return Err(ErrorResponse((
                 Status::NotFound,
-                "No author found with the specified ID".to_string(),
+                "No author found with the specified ID.".to_string(),
             )))
         }
     };
@@ -144,7 +144,7 @@ pub async fn update(
         None => {
             return Err(ErrorResponse((
                 Status::NotFound,
-                "No author with the specified ID.".to_string(),
+                "No author found with the specified ID.".to_string(),
             )))
         }
     };
@@ -181,7 +181,7 @@ pub async fn delete(
         None => {
             return Err(ErrorResponse((
                 Status::NotFound,
-                "No author with the specified ID.".to_string(),
+                "No author found with the specified ID.".to_string(),
             )))
         }
     };

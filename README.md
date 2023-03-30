@@ -74,6 +74,20 @@ cargo run
 - **All auth required requests**: Add header `token` with the JWT as the value.
 - **Token lifetime**: 4 hours.
 
+![API](./assets/api.png)
+
+---
+
+## Database Structure
+
+![Database Structure](./assets/db.png)
+
+---
+
+## Authentication Flow
+
+![Authentication Flow](./assets/authentication_flow.png)
+
 ---
 
 ## Test

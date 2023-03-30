@@ -52,6 +52,8 @@ cargo run
 
 ## API
 
+![API](./assets/api.png)
+
 | Method | Path                  | Auth? | Description                                          |
 | :----- | :-------------------- | :---- | :--------------------------------------------------- |
 | GET    | /                     | ⬜     | Index. Returns `Hello, World!`.                      |
@@ -70,23 +72,19 @@ cargo run
 | PUT    | /books/`{id}`         | ✅     | Update the book matching the `id`.                   |
 | DELETE | /books/`{id}`         | ✅     | Delete the book matching the `id`.                   |
 
-### Authentication
+## Authentication Flow
+
+![Authentication Flow](./assets/authentication_flow.png)
+
 - **All auth required requests**: Add header `token` with the JWT as the value.
 - **Token lifetime**: 4 hours.
 
-![API](./assets/api.png)
 
 ---
 
 ## Database Structure
 
 ![Database Structure](./assets/db.png)
-
----
-
-## Authentication Flow
-
-![Authentication Flow](./assets/authentication_flow.png)
 
 ---
 

@@ -5,6 +5,11 @@ A REST API server written in Rust with Rocket and SeaORM.
 
 ---
 
+## Udemy Course
+Learn about creating this on Udemy: [Creating an API server in Rust with Rocket, SeaORM and JWT by Afaan Bilal](https://www.udemy.com/course/rest-api-server-rust-rocket-seaorm-jwt/?referralCode=0A41F1674B329B330B9F).
+
+---
+
 ### **Author**: [Afaan Bilal](https://afaan.dev)
 
 ---

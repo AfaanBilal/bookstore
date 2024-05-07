@@ -43,13 +43,13 @@ impl<'r> FromRequest<'r> for AuthenticatedUser {
             let claims = match data {
                 Ok(p) => p.claims,
                 Err(_) => {
-                    return Outcome::Failure((Status::Unauthorized, "Invalid token".to_string()))
+                    return Outcome::Error((Status::Unauthorized, "Invalid token".to_string()))
                 }
             };
 
             Outcome::Success(AuthenticatedUser { id: claims.sub })
         } else {
-            Outcome::Failure((Status::Unauthorized, "Token absent".to_string()))
+            Outcome::Error((Status::Unauthorized, "Token absent".to_string()))
         }
     }
 }

@@ -1,7 +1,7 @@
 📕 BookStore
 ============
 
-A REST API server written in Rust with Rocket and SeaORM.
+BookStore Management REST API Server in Rust with Rocket, SeaORM and JWT.
 
 ---
 

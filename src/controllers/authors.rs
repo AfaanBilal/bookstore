@@ -20,6 +20,8 @@ use super::{
 use crate::entities::{author, prelude::*};
 use crate::{auth::AuthenticatedUser, entities::book};
 
+use chrono::{DateTime, Utc};
+
 #[derive(Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct ResAuthor {
@@ -152,7 +154,8 @@ pub async fn update(
     author.lastname = Set(req_author.lastname.to_owned());
     author.bio = Set(req_author.bio.to_owned());
 
-    author.updated_at = Set(DateTimeUtc::from(SystemTime::now()));
+    // author.updated_at = Set(DateTimeUtc::from(SystemTime::now()));
+    author.updated_at = Set(Some(DateTime::<Utc>::from(SystemTime::now()).naive_utc()));
 
     let author = author.update(db).await?;
 
